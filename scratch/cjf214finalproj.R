@@ -93,7 +93,11 @@ lter_cat |>
 
 # 9 Week Average using filters -------------------------------------------
 
+<<<<<<< HEAD
 test_smoothed_local <- tibble(
+=======
+test_smoothed_workbench <- tibble(
+>>>>>>> 3ed5a031bd2de970e7c76b2d82fcbb8cb13accb8
   window_start = seq(ymd("1986-05-20"), ymd("2020-12-29"), by = "63 days"),
   k = NA,
   mg = NA,
