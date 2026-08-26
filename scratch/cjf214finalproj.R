@@ -1,4 +1,5 @@
 library(tidyverse)
+library(patchwork)
 source("R/moving_average.R")
 
 # Loading in Data --------------------------------------------------------
@@ -24,92 +25,43 @@ BQ2_smoothed <- moving_average(BQ2_raw)
 BQ3_smoothed <- moving_average(BQ3_raw)
 
 lter_smoothed <- rbind(PRM_smoothed, BQ1_smoothed, BQ2_smoothed, BQ3_smoothed)
+colnames(lter_smoothed) <- c(
+  'window_start',
+  'K mgl-1',
+  'NO3-N ugl-1',
+  'Mg mgl-1',
+  'Ca mgl-1',
+  'NH4-N ugl-1',
+  'sample_id'
+)
 
-lter_smoothed |>
+lter_smoothed_long <- lter_smoothed |>
+  pivot_longer(
+    cols = c(
+      'K mgl-1',
+      'NO3-N ugl-1',
+      'Mg mgl-1',
+      'Ca mgl-1',
+      'NH4-N ugl-1'
+    ),
+    names_to = "ions",
+    values_to = "window_mean"
+  )
+
+
+lter_smoothed_long |>
   ggplot(
-    mapping = aes(x = window_start, y = ca, fill = sample_id)
+    mapping = aes(
+      x = window_start,
+      y = window_mean,
+      group = sample_id,
+      color = sample_id
+    )
   ) +
-  geom_line()
-
-
-# Scratch work -----------------------------------------------------------
-#### BELOW CODE IS FUNCTION THOUGHT PROCESS NOT TO RUN
-
-lter_cat <- rbind(PRM_raw, BQ1_raw, BQ2_raw, BQ3_raw)
-
-lter_smoothed <- tibble(
-  window_start = seq(ymd("1986-05-20"), ymd("2020-12-29"), by = "63 days"),
-  k = NA,
-  mg = NA,
-  no3_n = NA,
-  nh4_n = NA,
-  ca = NA,
-  sample_id = NA
-)
-
-# 9 Week Smoothed Average
-
-for (i in 1:length(lter_smoothed$window_start)) {
-  ws <- lter_smoothed$window_start[i]
-  we <- lter_smoothed$window_start[i] + 63
-  # for K
-  lter_smoothed$k[i] <- mean(
-    lter_cat$K[lter_cat$Sample_Date >= ws & lter_cat$Sample_Date < we],
-    na.rm = TRUE
-  )
-  # for mg
-  lter_smoothed$mg[i] <- mean(
-    lter_cat$Mg[lter_cat$Sample_Date >= ws & lter_cat$Sample_Date < we],
-    na.rm = TRUE
-  )
-  # for ca
-  lter_smoothed$ca[i] <- mean(
-    lter_cat$Ca[lter_cat$Sample_Date >= ws & lter_cat$Sample_Date < we],
-    na.rm = TRUE
-  )
-  # for nh4
-  lter_smoothed$nh4_n[i] <- mean(
-    lter_cat$'NH4_N'[lter_cat$Sample_Date >= ws & lter_cat$Sample_Date < we],
-    na.rm = TRUE
-  )
-  # for no3
-  lter_smoothed$no3_n[i] <- mean(
-    lter_cat$'NO3-N'[lter_cat$Sample_Date >= ws & lter_cat$Sample_Date < we],
-    na.rm = TRUE
-  )
-  # For sample ID
-  #lter_smoothed$sample_id[i] <- first(
-  #lter_cat$Sample_ID[lter_cat$Sample_Date >= ws & lter_cat$Sample_Date < we]
-  #)
-}
-
-lter_cat |>
-  ggplot(
-    mapping = aes(x = Sample_Date, y = Ca, fill = Sample_ID)
-  ) +
-  geom_point() +
-  theme_minimal()
-
-
-# 9 Week Average using filters -------------------------------------------
-
-<<<<<<< HEAD
-test_smoothed_local <- tibble(
-=======
-test_smoothed_workbench <- tibble(
->>>>>>> 3ed5a031bd2de970e7c76b2d82fcbb8cb13accb8
-  window_start = seq(ymd("1986-05-20"), ymd("2020-12-29"), by = "63 days"),
-  k = NA,
-  mg = NA,
-  no3_n = NA,
-  nh4_n = NA,
-  ca = NA,
-  Sample_Id = NA
-)
-
-test1 <- lter_smoothed$window_start[1]
-test2 <- lter_smoothed$window_start[1] + 63
-mean(
-  lter_cat$K[lter_cat$Sample_Date >= test1 & lter_cat$Sample_Date < test2],
-  na.rm = TRUE
-)
+  geom_line() +
+  theme_linedraw() +
+  theme(legend.position.inside = c(1, 1)) +
+  facet_grid(vars(lter_smoothed_long$ions), scales = "free", switch = "y") +
+  ylab("Ions") +
+  xlab("Years") +
+  labs(title = "Hurricane Effects on Stream Chemistry", color = "Site")
