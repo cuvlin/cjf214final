@@ -58,6 +58,7 @@ lter_smoothed_long |>
       color = sample_id
     )
   ) +
+<<<<<<< HEAD
   geom_line() +
   theme_linedraw() +
   theme(legend.position.inside = c(1, 1)) +
@@ -65,3 +66,6 @@ lter_smoothed_long |>
   ylab("Ions") +
   xlab("Years") +
   labs(title = "Hurricane Effects on Stream Chemistry", color = "Site")
+=======
+  geom_line()
+>>>>>>> e6c56565c928e636b2a16b8262b8f88c0aa391c2
