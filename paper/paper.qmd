@@ -20,7 +20,7 @@ The following script plots the smoothed dataset and formats it to look as close 
 
 ```{r}
 library(tidyverse)
-lter_smoothed_output <- read_csv("output/lter_smoothed_output.csv")
+lter_smoothed_output <- read_csv("../output/lter_smoothed_output.csv")
 hurricane_date <- as.Date("1989-09-18")
 
 lter_smoothed_output |>
