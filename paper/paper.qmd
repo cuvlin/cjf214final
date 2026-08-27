@@ -35,11 +35,11 @@ lter_smoothed_output |>
   geom_line() +
   theme_linedraw() +
   theme(legend.position = c(.97, .91)) +
-  facet_grid(vars(lter_smoothed_long$ions), scales = "free", switch = "y") +
+  facet_grid(vars(lter_smoothed_output$ions), scales = "free", switch = "y") +
   ylab("Ions") +
   xlab("Years") +
   labs(title = "Hurricane Effects on Stream Chemistry", linetype = "") #+
 #geom_vline(xintercept = hurricane_date, linetype = "dashed", linewidth = 4)
 
-ggsave("figs/fig3_recreation.png")
+ggsave("../figs/fig3_recreation.png")
 ```
