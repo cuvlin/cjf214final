@@ -132,9 +132,9 @@ lter_smoothed_long |>
   ) +
   geom_line() +
   theme_linedraw() +
-  theme(legend.position.inside = c(1, 1)) +
+  theme(legend.position = c(.97, .91)) +
   facet_grid(vars(lter_smoothed_long$ions), scales = "free", switch = "y") +
   ylab("Ions") +
   xlab("Years") +
-  labs(title = "Hurricane Effects on Stream Chemistry", color = "Site")
+  labs(title = "Hurricane Effects on Stream Chemistry", linetype = "")
 ```
