@@ -243,13 +243,13 @@ date  (1): Sample_Date
 <span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># for nh4</span></span>
 <span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>    smoothed_data<span class="sc">$</span>nh4_n[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(</span>
-<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>      raw_data<span class="sc">$</span><span class="st">'NH4-N'</span>[raw_data<span class="sc">$</span>Sample_Date <span class="sc">&gt;=</span> ws <span class="sc">&amp;</span> raw_data<span class="sc">$</span>Sample_Date <span class="sc">&lt;</span> we],</span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>      raw_data<span class="sc">$</span><span class="st">`</span><span class="at">NH4-N</span><span class="st">`</span>[raw_data<span class="sc">$</span>Sample_Date <span class="sc">&gt;=</span> ws <span class="sc">&amp;</span> raw_data<span class="sc">$</span>Sample_Date <span class="sc">&lt;</span> we],</span>
 <span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
 <span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># for nh4</span></span>
 <span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>    smoothed_data<span class="sc">$</span>no3_n[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(</span>
-<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a>      raw_data<span class="sc">$</span><span class="st">'NO3-N'</span>[raw_data<span class="sc">$</span>Sample_Date <span class="sc">&gt;=</span> ws <span class="sc">&amp;</span> raw_data<span class="sc">$</span>Sample_Date <span class="sc">&lt;</span> we],</span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a>      raw_data<span class="sc">$</span><span class="st">`</span><span class="at">NO3-N</span><span class="st">`</span>[raw_data<span class="sc">$</span>Sample_Date <span class="sc">&gt;=</span> ws <span class="sc">&amp;</span> raw_data<span class="sc">$</span>Sample_Date <span class="sc">&lt;</span> we],</span>
 <span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm =</span> <span class="cn">TRUE</span></span>
 <span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>  }</span>
@@ -271,10 +271,10 @@ date  (1): Sample_Date
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(lter_smoothed) <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">'window_start'</span>,</span>
 <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">'K mgl-1'</span>,</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">'NO3-N ugl-1'</span>,</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">'Mg mgl-1'</span>,</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">'Ca mgl-1'</span>,</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">'NH4-N ugl-1'</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">'Mg mgl-1'</span>,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">'NO3-N ugl-1'</span>,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">'NH4-N ugl-1'</span>,</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">'Ca mgl-1'</span>,</span>
 <span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">'sample_id'</span></span>
 <span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
@@ -321,7 +321,7 @@ date  (1): Sample_Date
 • colour : "Site"</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 48 rows containing missing values or values outside the scale range
+<pre><code>Warning: Removed 13 rows containing missing values or values outside the scale range
 (`geom_line()`).</code></pre>
 </div>
 <div class="cell-output-display">
