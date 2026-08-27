@@ -1,0 +1,140 @@
+# Background
+
+# Data
+## Loading in Data: 
+The four locations that we are looking at are PRM, BQ1, BQ2, and BQ3. In the raw data, they have different names, so we will load them in and rename them. The following scripts grabs the raw data files from /data and pulls them into the working script. We assign the variable 'colnames' the strings Sample_Date, NH4-N, CA, MG, NO3-N, K because these are the names of the columns that we want in the raw data files. We grab them using the select() function. Additionally, we load in the tidyverse package along with sourcing the function we wrote to create a moving average.
+```{r}
+library(tidyverse)
+source("../R/moving_average.R")
+
+colnames <- c('Sample_Date', 'NH4-N', 'Ca', 'Mg', 'NO3-N', 'K', 'Sample_ID')
+PRM_raw <- read_csv("../data/lter_data/RioMameyesPuenteRoto.csv") |> # MPR
+  select(colnames)
+BQ1_raw <- read_csv("../data/lter_data/QuebradaCuenca1-Bisley.csv") |> # Q1
+  select(colnames)
+BQ2_raw <- read_csv("../data/lter_data/QuebradaCuenca2-Bisley.csv") |> # Q1
+  select(colnames)
+BQ3_raw <- read_csv("../data/lter_data/QuebradaCuenca3-Bisley.csv") |> # Q3
+  select(colnames)
+```
+
+# Methods
+## Filter data with moving average function
+THe following scripts apply our moving average function to the data at the four locations. 
+
+### Function Definition
+The first script is the definition of our moving average function. It creates 9 week windows for the whole span of the dataset, and takes the average concentration value for each ion at each location in that 9-week window. It then puts all of the smoothed data into a new dataframe with the window start dates, individual ion concentrations, and 3 letter location marker.
+```{r}
+moving_average <- function(raw_data) {
+  if (raw_data$Sample_ID[1] == "Q1") {
+    sample_id <- "BQ1"
+  } else if (raw_data$Sample_ID[1] == "Q2") {
+    sample_id <- "BQ2"
+  } else if (raw_data$Sample_ID[1] == "Q3") {
+    sample_id <- "BQ3"
+  } else if (raw_data$Sample_ID[1] == "MPR") {
+    sample_id <- "PRM"
+  }
+
+  smoothed_data <- tibble(
+    window_start = seq(ymd("1988-01-01"), ymd("1994-12-31"), by = "63 days"),
+    k = NA,
+    mg = NA,
+    no3_n = NA,
+    nh4_n = NA,
+    ca = NA,
+    sample_id = sample_id
+  )
+
+  for (i in 1:length(smoothed_data$window_start)) {
+    ws <- smoothed_data$window_start[i]
+    we <- smoothed_data$window_start[i] + 63
+
+    # for k
+    smoothed_data$k[i] <- mean(
+      raw_data$K[raw_data$Sample_Date >= ws & raw_data$Sample_Date < we],
+      na.rm = TRUE
+    )
+
+    # for mg
+    smoothed_data$mg[i] <- mean(
+      raw_data$Mg[raw_data$Sample_Date >= ws & raw_data$Sample_Date < we],
+      na.rm = TRUE
+    )
+
+    # for ca
+    smoothed_data$ca[i] <- mean(
+      raw_data$Ca[raw_data$Sample_Date >= ws & raw_data$Sample_Date < we],
+      na.rm = TRUE
+    )
+
+    # for nh4
+    smoothed_data$nh4_n[i] <- mean(
+      raw_data$'NH4-N'[raw_data$Sample_Date >= ws & raw_data$Sample_Date < we],
+      na.rm = TRUE
+    )
+
+    # for nh4
+    smoothed_data$no3_n[i] <- mean(
+      raw_data$'NO3-N'[raw_data$Sample_Date >= ws & raw_data$Sample_Date < we],
+      na.rm = TRUE
+    )
+  }
+  return(smoothed_data)
+}
+```
+### Apply function to the datset
+This script applies the moving average function to each dataset and then combines them into one large smoothed dataset. Then, for logistical purposes, we take the combined smoothed dataset into long format so that we can plot the data using ggplot() functions.
+```{r}
+# Use moving_average function
+PRM_smoothed <- moving_average(PRM_raw)
+BQ1_smoothed <- moving_average(BQ1_raw)
+BQ2_smoothed <- moving_average(BQ2_raw)
+BQ3_smoothed <- moving_average(BQ3_raw)
+
+lter_smoothed <- rbind(PRM_smoothed, BQ1_smoothed, BQ2_smoothed, BQ3_smoothed)
+colnames(lter_smoothed) <- c(
+  'window_start',
+  'K mgl-1',
+  'NO3-N ugl-1',
+  'Mg mgl-1',
+  'Ca mgl-1',
+  'NH4-N ugl-1',
+  'sample_id'
+)
+
+lter_smoothed_long <- lter_smoothed |>
+  pivot_longer(
+    cols = c(
+      'K mgl-1',
+      'NO3-N ugl-1',
+      'Mg mgl-1',
+      'Ca mgl-1',
+      'NH4-N ugl-1'
+    ),
+    names_to = "ions",
+    values_to = "window_mean"
+  )
+```
+
+# Results
+## Plot Data
+The following script plots the smoothed dataset and formats it to look as close as I could get it to figure 4 of the Schaefer paper. It uses several ggplot() parameters and functions to achieve the desired look.
+```{r}
+lter_smoothed_long |>
+  ggplot(
+    mapping = aes(
+      x = window_start,
+      y = window_mean,
+      group = sample_id,
+      linetype = sample_id
+    )
+  ) +
+  geom_line() +
+  theme_linedraw() +
+  theme(legend.position.inside = c(1, 1)) +
+  facet_grid(vars(lter_smoothed_long$ions), scales = "free", switch = "y") +
+  ylab("Ions") +
+  xlab("Years") +
+  labs(title = "Hurricane Effects on Stream Chemistry", color = "Site")
+```
