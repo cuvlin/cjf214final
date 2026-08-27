@@ -24,7 +24,7 @@ THe following scripts apply our moving average function to the data at the four 
 
 ### Function Definition
 The first script is the definition of our moving average function. It creates 9 week windows for the whole span of the dataset, and takes the average concentration value for each ion at each location in that 9-week window. It then puts all of the smoothed data into a new dataframe with the window start dates, individual ion concentrations, and 3 letter location marker.
-```{r}
+```{r, eval = FALSE}
 moving_average <- function(raw_data) {
   if (raw_data$Sample_ID[1] == "Q1") {
     sample_id <- "BQ1"
@@ -70,13 +70,13 @@ moving_average <- function(raw_data) {
 
     # for nh4
     smoothed_data$nh4_n[i] <- mean(
-      raw_data$'NH4-N'[raw_data$Sample_Date >= ws & raw_data$Sample_Date < we],
+      raw_data$`NH4-N`[raw_data$Sample_Date >= ws & raw_data$Sample_Date < we],
       na.rm = TRUE
     )
 
     # for nh4
     smoothed_data$no3_n[i] <- mean(
-      raw_data$'NO3-N'[raw_data$Sample_Date >= ws & raw_data$Sample_Date < we],
+      raw_data$`NO3-N`[raw_data$Sample_Date >= ws & raw_data$Sample_Date < we],
       na.rm = TRUE
     )
   }
@@ -96,10 +96,10 @@ lter_smoothed <- rbind(PRM_smoothed, BQ1_smoothed, BQ2_smoothed, BQ3_smoothed)
 colnames(lter_smoothed) <- c(
   'window_start',
   'K mgl-1',
-  'NO3-N ugl-1',
   'Mg mgl-1',
-  'Ca mgl-1',
+  'NO3-N ugl-1',
   'NH4-N ugl-1',
+  'Ca mgl-1',
   'sample_id'
 )
 

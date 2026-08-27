@@ -28,10 +28,10 @@ lter_smoothed <- rbind(PRM_smoothed, BQ1_smoothed, BQ2_smoothed, BQ3_smoothed)
 colnames(lter_smoothed) <- c(
   'window_start',
   'K mgl-1',
-  'NO3-N ugl-1',
   'Mg mgl-1',
-  'Ca mgl-1',
+  'NO3-N ugl-1',
   'NH4-N ugl-1',
+  'Ca mgl-1',
   'sample_id'
 )
 

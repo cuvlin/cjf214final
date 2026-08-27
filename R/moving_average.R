@@ -43,13 +43,13 @@ moving_average <- function(raw_data) {
 
     # for nh4
     smoothed_data$nh4_n[i] <- mean(
-      raw_data$'NH4-N'[raw_data$Sample_Date >= ws & raw_data$Sample_Date < we],
+      raw_data$`NH4-N`[raw_data$Sample_Date >= ws & raw_data$Sample_Date < we],
       na.rm = TRUE
     )
 
     # for nh4
     smoothed_data$no3_n[i] <- mean(
-      raw_data$'NO3-N'[raw_data$Sample_Date >= ws & raw_data$Sample_Date < we],
+      raw_data$`NO3-N`[raw_data$Sample_Date >= ws & raw_data$Sample_Date < we],
       na.rm = TRUE
     )
   }
