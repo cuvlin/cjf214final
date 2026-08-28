@@ -1,8 +1,10 @@
 # Background
+Freshwater streams are very sensitive to disturbances. Disturbances, such as hurricanes, can significantly alter the stream water chemistry for years. In 1989, Hurricane Hugo struck Puerto Rico, leaving a trail of damage along its path. In a study called *Effects of hurricane disturbance on stream water concentrations and fluxes in eight tropical forest watersheds of the Luquillo Experimental Forest, Puerto Rico* by [Schaefer et al.](/paper/original_paper.pdf), the effects of Hugo on local streamwater chemistry are investigated for 2.5-11 years following the hurricane. In this study, scientists cleaned years of data to produce a smoothed time series of 5 different ions in four different locations. The motivation for the following analysis is to reproduce figure #3 from this study.
 
 # Data
-## Loading in Data: 
-The four locations that we are looking at are PRM, BQ1, BQ2, and BQ3. In the raw data, they have different names, so we will load them in and rename them. The following scripts grabs the raw data files from /data and pulls them into the working script. We assign the variable 'colnames' the strings Sample_Date, NH4-N, CA, MG, NO3-N, K because these are the names of the columns that we want in the raw data files. We grab them using the select() function. Additionally, we load in the tidyverse package along with sourcing the function we wrote to create a moving average.
+## Data and Locations: 
+The four locations that we are looking at are PRM, BQ1, BQ2, and BQ3. These locations correspond to the testing sites Quebradas 1, 2, 3 (BQ1, BQ2, NQ3), and Puente Roto Mameyes (PRM). In the raw data, they have different names, so we will rename them to match the original paper. All of the data cleaning is done in an accessory script called 1_clean_data.R. There are five ions that we are looking at: Potassium (k), Magnesium (mg), Calcium (ca), Nitrate (no3), and Ammonium (nh4).
+
 
 # Methods
 ## Filter data with moving average function
@@ -16,31 +18,30 @@ The 1_clean_data.R script applies the moving average function to each dataset an
 
 # Results
 ## Plot Data
-The following script plots the smoothed dataset and formats it to look as close as I could get it to figure 4 of the Schaefer paper. It uses several ggplot() parameters and functions to achieve the desired look.
+The following script plots the smoothed dataset and formats it to look as close as I could get it to figure 4 of the Schaefer paper. It uses several ggplot() parameters and functions to achieve the desired look. A .png form of the final figure is outputted at he end of this code; it can be found in the /figs folder.
 
 ```{r}
 #| warning: false
 library(tidyverse)
 lter_smoothed_output <- read_csv("../output/lter_smoothed_output.csv")
-hurricane_date <- as.Date("1989-09-18")
 
-lter_smoothed_output |>
-  ggplot(
-    mapping = aes(
-      x = window_start,
-      y = window_mean,
-      group = sample_id,
-      linetype = sample_id
-    )
-  ) +
+ggplot(
+  data = lter_smoothed_output,
+  mapping = aes(
+    x = window_start,
+    y = window_mean,
+    group = sample_id,
+    linetype = sample_id
+  )
+) +
   geom_line() +
+  geom_vline(xintercept = ymd("1989-09-18"), linetype = "dashed") +
   theme_linedraw() +
   theme(legend.position = c(.97, .91)) +
-  facet_grid(vars(lter_smoothed_output$ions), scales = "free", switch = "y") +
+  facet_grid(rows = vars(ions), scales = "free_y", switch = "y") +
   ylab("Ions") +
   xlab("Years") +
-  labs(title = "Hurricane Effects on Stream Chemistry", linetype = "") #+
-#geom_vline(xintercept = hurricane_date, linetype = "dashed", linewidth = 4)
+  labs(title = "Hurricane Effects on Stream Chemistry", linetype = "")
 
 ggsave("../figs/fig3_recreation.png")
 ```

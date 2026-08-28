@@ -90,12 +90,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="background" class="level1">
 <h1>Background</h1>
+<p>Freshwater streams are very sensitive to disturbances. Disturbances, such as hurricanes, can significantly alter the stream water chemistry for years. In 1989, Hurricane Hugo struck Puerto Rico, leaving a trail of damage along its path. In a study called <em>Effects of hurricane disturbance on stream water concentrations and fluxes in eight tropical forest watersheds of the Luquillo Experimental Forest, Puerto Rico</em> by <a href="./paper/original_paper.pdf">Schaefer et al.</a>, the effects of Hugo on local streamwater chemistry are investigated for 2.5-11 years following the hurricane. In this study, scientists cleaned years of data to produce a smoothed time series of 5 different ions in four different locations. The motivation for the following analysis is to reproduce figure #3 from this study.</p>
 </section>
 <section id="data" class="level1">
 <h1>Data</h1>
-<section id="loading-in-data" class="level2">
-<h2 class="anchored" data-anchor-id="loading-in-data">Loading in Data:</h2>
-<p>The four locations that we are looking at are PRM, BQ1, BQ2, and BQ3. In the raw data, they have different names, so we will load them in and rename them. The following scripts grabs the raw data files from /data and pulls them into the working script. We assign the variable ‘colnames’ the strings Sample_Date, NH4-N, CA, MG, NO3-N, K because these are the names of the columns that we want in the raw data files. We grab them using the select() function. Additionally, we load in the tidyverse package along with sourcing the function we wrote to create a moving average.</p>
+<section id="data-and-locations" class="level2">
+<h2 class="anchored" data-anchor-id="data-and-locations">Data and Locations:</h2>
+<p>The four locations that we are looking at are PRM, BQ1, BQ2, and BQ3. These locations correspond to the testing sites Quebradas 1, 2, 3 (BQ1, BQ2, NQ3), and Puente Roto Mameyes (PRM). In the raw data, they have different names, so we will rename them to match the original paper. All of the data cleaning is done in an accessory script called 1_clean_data.R. There are five ions that we are looking at: Potassium (k), Magnesium (mg), Calcium (ca), Nitrate (no3), and Ammonium (nh4).</p>
 </section>
 </section>
 <section id="methods" class="level1">
@@ -117,28 +118,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Results</h1>
 <section id="plot-data" class="level2">
 <h2 class="anchored" data-anchor-id="plot-data">Plot Data</h2>
-<p>The following script plots the smoothed dataset and formats it to look as close as I could get it to figure 4 of the Schaefer paper. It uses several ggplot() parameters and functions to achieve the desired look.</p>
+<p>The following script plots the smoothed dataset and formats it to look as close as I could get it to figure 4 of the Schaefer paper. It uses several ggplot() parameters and functions to achieve the desired look. A .png form of the final figure is outputted at he end of this code; it can be found in the /figs folder.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>lter_smoothed_output <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../output/lter_smoothed_output.csv"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>hurricane_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"1989-09-18"</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>lter_smoothed_output <span class="sc">|&gt;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> <span class="fu">aes</span>(</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> window_start,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> window_mean,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">group =</span> sample_id,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">linetype =</span> sample_id</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> lter_smoothed_output,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">mapping =</span> <span class="fu">aes</span>(</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> window_start,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> window_mean,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">group =</span> sample_id,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">linetype =</span> sample_id</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">ymd</span>(<span class="st">"1989-09-18"</span>), <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_linedraw</span>() <span class="sc">+</span></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(.<span class="dv">97</span>, .<span class="dv">91</span>)) <span class="sc">+</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(<span class="fu">vars</span>(lter_smoothed_output<span class="sc">$</span>ions), <span class="at">scales =</span> <span class="st">"free"</span>, <span class="at">switch =</span> <span class="st">"y"</span>) <span class="sc">+</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(<span class="at">rows =</span> <span class="fu">vars</span>(ions), <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">switch =</span> <span class="st">"y"</span>) <span class="sc">+</span></span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Ions"</span>) <span class="sc">+</span></span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Years"</span>) <span class="sc">+</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Hurricane Effects on Stream Chemistry"</span>, <span class="at">linetype =</span> <span class="st">""</span>) <span class="co">#+</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Hurricane Effects on Stream Chemistry"</span>, <span class="at">linetype =</span> <span class="st">""</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -146,9 +147,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#geom_vline(xintercept = hurricane_date, linetype = "dashed", linewidth = 4)</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"../figs/fig3_recreation.png"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"../figs/fig3_recreation.png"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
